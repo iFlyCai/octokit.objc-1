@@ -2,6 +2,7 @@
 
 # OctoKit
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![CocoaPods compatible](https://img.shields.io/badge/CocoaPods-compatible-4BC51D.svg?style=flat)](https://cocoapods.org/pods/OctoKit)
 
 OctoKit is a Cocoa and Cocoa Touch framework for interacting with the [GitHub
 API](https://developer.github.com/), built using
@@ -334,6 +335,42 @@ OctoKit is still new and moving fast, so we may make breaking changes from
 time-to-time, but it has partial unit test coverage and is already being used
 in [GitHub for Mac](https://desktop.github.com/)'s production code.
 
+### CocoaPods
+
+OctoKit is available through [CocoaPods](https://cocoapods.org/). The minimum
+supported platform is **iOS 16.0**. Add the following to your `Podfile`:
+
+```ruby
+platform :ios, '16.0'
+
+target 'YourAppTarget' do
+  pod 'OctoKit', :git => 'https://github.com/octokit/octokit.objc.git', :tag => '0.7.8'
+end
+
+# OctoKit depends on AFNetworking 1.x / ReactiveCocoa 2.x / Mantle 1.x, which
+# still declare old deployment targets, and AFNetworking 1.x includes a private
+# SDK header. Align them with the current SDK:
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+
+      next unless target.name == 'AFNetworking'
+      config.build_settings['CLANG_ENABLE_MODULES'] = 'NO'
+      config.build_settings['OTHER_LDFLAGS'] = '$(inherited) -framework UIKit'
+    end
+  end
+end
+```
+
+Then run `pod install` and import the library where you need it:
+
+```objc
+#import <OctoKit/OctoKit.h>
+```
+
+### Manually
+
 To add OctoKit to your application:
 
  1. Add the OctoKit repository as a submodule of your application's
@@ -351,9 +388,6 @@ To add OctoKit to your application:
     $(inherited)` to the "Header Search Paths" build setting (this is only
     necessary for archive builds, but it has no negative effect otherwise).
  1. **For iOS targets**, add `-ObjC` to the "Other Linker Flags" build setting.
-
-If you would prefer to use [CocoaPods](https://cocoapods.org/), there are some [OctoKit podspecs](https://github.com/CocoaPods/Specs/tree/master/Specs/OctoKit)
-that have been generously contributed by third parties.
 
 If you’re developing OctoKit on its own, then use `OctoKit.xcworkspace`.
 

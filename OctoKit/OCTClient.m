@@ -19,7 +19,13 @@
 #import "OCTUser.h"
 #import "RACSignal+OCTClientAdditions.h"
 #import <ReactiveCocoa/ReactiveCocoa.h>
+
+#if __has_include(<ReactiveCocoa/RACEXTScope.h>)
+// The ReactiveCocoa pod renames the extobjc headers to RACEXT*.
+#import <ReactiveCocoa/RACEXTScope.h>
+#else
 #import <ReactiveCocoa/EXTScope.h>
+#endif
 
 NSString * const OCTClientErrorDomain = @"OCTClientErrorDomain";
 const NSInteger OCTClientErrorAuthenticationFailed = 666;

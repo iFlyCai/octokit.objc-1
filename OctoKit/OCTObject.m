@@ -8,7 +8,12 @@
 
 #import "OCTObject.h"
 #import "OCTServer.h"
+#if __has_include(<ReactiveCocoa/RACEXTKeyPathCoding.h>)
+// The ReactiveCocoa pod renames the extobjc headers to RACEXT*.
+#import <ReactiveCocoa/RACEXTKeyPathCoding.h>
+#else
 #import <ReactiveCocoa/EXTKeyPathCoding.h>
+#endif
 #import "OCTObject+Private.h"
 
 @interface OCTObject ()
